@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+  db:
+    container_name: nc_db
+    image: mariadb:10.5
+    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
+    env_file:
+      - db.env
+
+  redis:
+    container_name: nc_redis
+    image: redis:alpine
+    restart: always
+
+  app:
+    container_name: nc_app
+    build: ./mediadc
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - REDIS_HOST=redis
+      - NEXTCLOUD_ADMIN_USER=admin
+      - NEXTCLOUD_ADMIN_PASSWORD=12345
+      - NEXTCLOUD_TRUSTED_DOMAINS=192.168.4.18 docker1.dnepr99
+    env_file:
+      - db.env
+    depends_on:
+      - db
+      - redis
+
+  web:
+    container_name: nc_web
+    build: ./web
+    restart: always
+    ports:
+      - 8888:80
+      - 6443:443
+    volumes:
+      - nextcloud:/var/www/html:ro
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      - VIRTUAL_HOST=docker1.dnepr99
+    depends_on:
+      - app
+    networks:
+      - default
+
+  cron:
+    container_name: nc_cron
+    image: nextcloud:apache
+    restart: always
+    volumes:
+      - nextcloud:/var/www/html
+    entrypoint: /cron.sh
+    depends_on:
+      - db
+      - redis
+
+volumes:
+  db:
+  nextcloud:
+  certs:
