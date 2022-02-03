@@ -11,9 +11,30 @@ RUN set -ex; \
     py3-pillow \
     py3-asn1crypto;
 
-# Install optional packages
-RUN apk add --no-cache \
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+
+# Install optional packages if it is not ARM
+RUN set -ex; \
+    \
+    arch=$(arch | sed s/x86_64/amd64/) && \
+    apk add --no-cache \
     py3-cffi \
     py3-scipy \
     py3-pynacl \
-    py3-cryptography;
+    py3-cryptography \
+    py3-pip;
+
+RUN set -ex; \
+    \
+    arch=$(arch | sed s/x86_64/amd64/) && \
+    pip install -U pip
+
+RUN set -ex; \
+    \
+    arch=$(arch | sed s/x86_64/amd64/) && \
+    python3 -m pip install pillow_heif
+
+RUN set -ex; \
+    \
+    arch=$(arch | sed s/x86_64/amd64/) && \
+    python3 -m pip install pywavelets

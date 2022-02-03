@@ -56,7 +56,7 @@ services:
 
   cron:
     container_name: nc_cron
-    image: nextcloud:apache
+    build: nextcloud:23.0.0-fpm-alpine
     restart: always
     volumes:
       - nextcloud:/var/www/html
