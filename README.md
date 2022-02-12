@@ -3,11 +3,11 @@
 There is a basic Docker Compose configuration example to use [MediaDC](https://github.com/andrey18106/mediadc) application.
 
 You need to adjust your Nextcloud app container like in [/mediadc/Dockerfile](/mediadc/Dockerfile)
-to install required dependecies and build it in [docker-compose.yml](docker-compose.yml#L24)
+to install required dependecies and re-build your container like in [docker-compose.yml](docker-compose.yml#L24).
 
 ## Installation with hands
 
-If you don't want to use Dockerfile changes, you can install the required packages for the MediaDC app with hands, but to save changes they are needed to be committed into separate the Docker image.
+If you don't want to use Dockerfile, you can install the required packages for the MediaDC app with hands, but to save changes they are needed to be committed into the separate Docker image.
 
 ### Connect to Nextcloud Docker container terminal
 
@@ -19,7 +19,7 @@ If you are using Docker GUI management (e.g. Portainer) - you can easily connect
 
 Now, when you are logged in, you can install required packages to the container like in [/mediadc/Dockerfile](/mediadc/Dockerfile).
 
-### Install required packages.
+### Install required packages
 
 `apk add --no-cache ffmpeg imagemagick supervisor py3-numpy py3-pillow py3-asn1crypto`
 
@@ -43,9 +43,12 @@ After that check installation on the MediaDC Configuration page and it should be
 
 ### Save Docker container image changes
 
-To save this changes you need to commit them to the separete Docker image. By default, the container being committed and its processes will be paused while the image is committed. This reduces the likelihood of encountering data corruption during the process of creating the commit. If this behavior is undesired, set the `--pause` option to false. Read more on [official docs](https://docs.docker.com/engine/reference/commandline/commit/).
+To save this changes you need to commit them to the separete Docker image. By default, the container being committed and its processes will be paused while the image is committed. This reduces the likelihood of encountering data corruption during the process of creating the commit. 
+If this behavior is undesired, set the `--pause` option to false. 
+Read more on [official docs](https://docs.docker.com/engine/reference/commandline/commit/).
 
-`docker commit [CONTAINER_ID] [new_image_name]`
-`docker image ls` - to check Docker `[new_image_name]` image created.
+- `docker commit [CONTAINER_ID] [new_image_name]`
 
-And use it instead of the previous default Nextcloud Docker image from Docker Hub. This is one of the disadvantages of this way of installation.
+- `docker image ls` - to check Docker `[new_image_name]` image created.
+
+- Use `[new_image_name]` instead of the previous default Nextcloud Docker image. This is one of the disadvantages of this way of installation.
