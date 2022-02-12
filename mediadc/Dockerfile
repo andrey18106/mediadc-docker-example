@@ -13,10 +13,9 @@ RUN set -ex; \
 
 SHELL ["/bin/sh", "-o", "pipefail", "-c"]
 
-# Install optional packages if it is not ARM
+# Install optional packages
 RUN set -ex; \
     \
-    arch=$(arch | sed s/x86_64/amd64/) && \
     apk add --no-cache \
     py3-cffi \
     py3-scipy \
@@ -26,14 +25,13 @@ RUN set -ex; \
 
 RUN set -ex; \
     \
-    arch=$(arch | sed s/x86_64/amd64/) && \
-    pip install -U pip
+    python3 -m pip install -U pip
 
 RUN set -ex; \
     \
-    arch=$(arch | sed s/x86_64/amd64/) && \
     python3 -m pip install pillow_heif
 
+# Install pywavelets if it is not ARM
 RUN set -ex; \
     \
     arch=$(arch | sed s/x86_64/amd64/) && \

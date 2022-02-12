@@ -29,7 +29,7 @@ Now, when you are logged in, you can install required packages to the container 
 
 ### Upgrade pip
 
-`pip install -U pip`
+`python3 -m pip install -U pip`
 
 ### Install [pillow_heif](https://github.com/bigcat88/pillow_heif)
 
