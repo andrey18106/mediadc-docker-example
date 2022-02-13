@@ -15,7 +15,7 @@ If you are using Docker GUI management (e.g. Portainer) - you can easily connect
 
 1. `docker ps` - list active containers to find one with Nextcloud app and copy CONTAINER_ID.
 2. `docker exec -it [CONTAINER_ID] [shell command]` - connect to the container's terminal.
-`[shell command]` - path to shell executable, for Alpine it is `sh` (`/bin/sh/`), for other distros usually `bash` (`/bin/bash`).
+`[shell command]` - path to shell executable, for Alpine it is `sh` (`/bin/sh`), for other distros usually `bash` (`/bin/bash`).
 
 Now, when you are logged in, you can install required packages to the container like in [/mediadc/Dockerfile](/mediadc/Dockerfile).
 
