@@ -1,71 +1,146 @@
-version: '3'
+version: '3.3'
+# can't be used in portainer b/c of local docker image builds, should be rerun regularly for updates
+# docker compose up -d --build
+# https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/postgres/fpm/docker-compose.yml
+# https://github.com/nextcloud/docker/tree/master/.examples/docker-compose/with-nginx-proxy/postgres/fpm/proxy
+networks:
+  nextcloud_network:
+    external: false
 
+# log into root and 
+# https://github.com/matiasdelellis/facerecognition/wiki/Models#comparison
+# chown fix permission in root
+# run ./occ in root to get app user and log in using id
+# in app user user
+# ./occ app:install mediadc
+# ./occ app:install facerecognition
+#  ./occ face:setup -M 8GB
+# install default models
+# ./occ face:setup -m 1
+# user must have face recognition enabled, also follow prompt to finally run
+# ./occ face:background-job
 services:
-  db:
-    container_name: nc_db
-    image: mariadb:10.5
-    command: --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+   db_15:
+    container_name: nextcloud_postgres15
+    image: postgres:15-alpine
+    networks: 
+      - nextcloud_network
     restart: always
+    ports:
+      - "7102:5432"
     volumes:
-      - db:/var/lib/mysql
+      - pg_15:/var/lib/postgresql/data
     environment:
-      - MYSQL_ROOT_PASSWORD=
-      - MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true
-    env_file:
-      - db.env
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
-  redis:
-    container_name: nc_redis
+   pgadmin:
+    container_name: nextcloud_pgadmin4
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    networks: 
+      - nextcloud_network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: support@example.com
+      PGADMIN_DEFAULT_PASSWORD: easypassword1234!
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - pgadmin-certs:/var/lib/postgresql/certs
+    ports:
+      - "5055:80"
+    links:
+      - "db_15:database15"
+
+   redis:
     image: redis:alpine
-    restart: always
+    container_name: nextcloud_redis
+    networks: 
+      - nextcloud_network 
+    restart: unless-stopped
+    command: ["--databases", "1"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - redis:/data
 
-  app:
-    container_name: nc_app
-    build: ./mediadc
+# https://stackoverflow.com/a/66829831/2875452
+   redisinsight:
+    image: redislabs/redisinsight:latest
+    container_name: nextcloud_redisinsight
+    networks: 
+      - nextcloud_network 
+    ports:
+      - '8001:8001'
+    links:
+      - "redis:redis"
+    volumes:
+      - redisinsight:/db 
+
+   app:
+    container_name: nextcloud_app
+    build: ./app
     restart: always
+    networks: 
+      - nextcloud_network
     volumes:
       - nextcloud:/var/www/html
+      # TODO: update your external drive path here
+      - d:/nextcloud_data:/var/www/html/data
     environment:
+      - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
+      - POSTGRES_HOST=database:5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - NEXTCLOUD_ADMIN_PASSWORD=${ADMIN_USERNAME}
+      - NEXTCLOUD_ADMIN_USER=${ADMIN_PASSWORD}
+      - PHP_MEMORY_LIMIT=8192M
+      # TODO: may want 2048M memory limit if ram is 16 GB
+      - PHP_UPLOAD_LIMIT=8192M
       - REDIS_HOST=redis
-      - NEXTCLOUD_ADMIN_USER=admin
-      - NEXTCLOUD_ADMIN_PASSWORD=12345
-      - NEXTCLOUD_TRUSTED_DOMAINS=192.168.4.18 docker1.dnepr99
-    env_file:
-      - db.env
-    depends_on:
-      - db
-      - redis
+    links:
+      - "db_15:database"
+      - "redis:redis"
 
-  web:
-    container_name: nc_web
+   web:
+    container_name: nextcloud_web
     build: ./web
     restart: always
     ports:
-      - 8888:80
-      - 6443:443
+      - ${HTTP_PORT}:80
     volumes:
       - nextcloud:/var/www/html:ro
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
-      - VIRTUAL_HOST=docker1.dnepr99
+      - VIRTUAL_HOST=nextcloud.example.com
     depends_on:
       - app
     networks:
-      - default
+      - nextcloud_network
 
-  cron:
-    container_name: nc_cron
-    image: nextcloud:23.0.0-fpm-alpine
+   cron:
+    container_name: nextcloud_cron
+    image: nextcloud:${NEXTCLOUD_VERSION}
     restart: always
     volumes:
       - nextcloud:/var/www/html
     entrypoint: /cron.sh
-    depends_on:
-      - db
-      - redis
+    links:
+      - "db_15:database"
+      - "redis:redis"
 
 volumes:
-  db:
+  pg_15:
   nextcloud:
+  nextcloud_config:
+  pgadmin-data:
+  pgadmin-certs:
+  redisinsight:
+  redis:
+    driver: local
   certs:

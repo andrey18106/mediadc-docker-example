@@ -1,54 +1,46 @@
-# Nextcloud MediaDC Docker configuration
+# Nextcloud Docker configuration with Machine Learning Dependencies for plugins
+* fork off of MediaDC docker compose
+* currently targeting nextcloud 25 since this is the latest version supported by plugins
+* plugins that will work with current setup
+  * [MediaDC](#mediadc-docker-image-base-example)
+  * recognize
+  * facial recognize
 
+## Getting Started
+1. this is assumming you are using windows
+1. setup new computer
+1. create a local only account (not linked to email)
+    1. grant local account admin access
+    1. remove pin and do auto login (so on restart applications go back online)
+1. install docker (wsl install)
+1. config wsl memory for docker to persist after machine restart
+1. install portainer (for managing apps)
+1. buy a domain on [namecheap](https://namecheap.pxf.io/m5O5Ke) $15 a year and setup on cloudflare, setup cloudflare tunnel for public urls for your device and use subdomains for your services.
+1. copy `example.env` to `.env`
+    * `xcopy example.env .env`
+    * update values as needed
+1. update nginx values `web\nginx.conf` for your public url
+1. replace nextcloud.example.com with your public url
+1. `cd` into this folder
+   * run docker compose `docker compose up -d`
+
+## Hardware
+* Note: raspberry pi is not powerful enough for nextcloud
+* beelink-5500h (5500u is also fine, just less powerful)
+* bump ram to 64 gb (not needed, but nice for handling more users)
+* hdmi dummy plugin (for remote desktop)
+* external hard drive (depends on your expected use, can replace later)
+  * 16 TB 2x
+  * 6 TB 2x
+  * 8 TB ssd, 8 TB hd
+
+## MediaDC docker image base example
 There is a basic Docker Compose configuration example to use [MediaDC](https://github.com/andrey18106/mediadc) application.
 
-You need to adjust your Nextcloud app container like in [/mediadc/Dockerfile](/mediadc/Dockerfile)
+
+## Advanced
+You need to adjust your Nextcloud app container like in [/app/Dockerfile](/mediadc/Dockerfile)
 to install required dependecies and re-build your container like in [docker-compose.yml](docker-compose.yml#L24).
 
-## Installation with hands
+* `docker compose up -d --build` will rebuild docker images
 
-If you don't want to use Dockerfile, you can install the required packages for the MediaDC app with hands, but to save changes they are needed to be committed into the separate Docker image.
-
-### Connect to Nextcloud Docker container terminal
-
-If you are using Docker GUI management (e.g. Portainer) - you can easily connect to the terminal via it (find container and the console button), otherwise, you can do it from your host server terminal:
-
-1. `docker ps` - list active containers to find one with Nextcloud app and copy CONTAINER_ID.
-2. `docker exec -it [CONTAINER_ID] [shell command]` - connect to the container's terminal.
-`[shell command]` - path to shell executable, for Alpine it is `sh` (`/bin/sh`), for other distros usually `bash` (`/bin/bash`).
-
-Now, when you are logged in, you can install required packages to the container like in [/mediadc/Dockerfile](/mediadc/Dockerfile).
-
-### Install required packages
-
-`apk add --no-cache ffmpeg imagemagick supervisor py3-numpy py3-pillow py3-asn1crypto`
-
-### Install optional packages
-
-`apk add --no-cache py3-cffi py3-scipy py3-pynacl py3-cryptography py3-pip`
-
-### Upgrade pip
-
-`python3 -m pip install -U pip`
-
-### Install [pillow_heif](https://github.com/bigcat88/pillow_heif)
-
-`python3 -m pip install pillow_heif`
-
-### Install pywavelets
-
-`python3 -m pip install pywavelets`
-
-After that check installation on the MediaDC Configuration page and it should be done.
-
-### Save Docker container image changes
-
-To save this changes you need to commit them to the separete Docker image. By default, the container being committed and its processes will be paused while the image is committed. This reduces the likelihood of encountering data corruption during the process of creating the commit. 
-If this behavior is undesired, set the `--pause` option to false. 
-Read more on [official docs](https://docs.docker.com/engine/reference/commandline/commit/).
-
-- `docker commit [CONTAINER_ID] [new_image_name]`
-
-- `docker image ls` - to check Docker `[new_image_name]` image created.
-
-- Use `[new_image_name]` instead of the previous default Nextcloud Docker image. This is one of the disadvantages of this way of installation.
