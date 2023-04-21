@@ -43,7 +43,7 @@
      * installed both
      * alternatives
        * anydesk, ...
-  * resilio if syncing peer to peer folder contents to another folder (a form of backup)
+   * resilio if syncing peer to peer folder contents to another folder (a form of backup)
 1. create a local only account (not linked to email)
     1. grant local account admin access
     1. remove pin and do auto login (so on restart applications go back online)
