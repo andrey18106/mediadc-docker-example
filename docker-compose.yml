@@ -36,12 +36,13 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
    pgadmin:
-    container_name: nextcloud_pgadmin4
+    container_name: nextcloud_pgadmin
     image: dpage/pgadmin4
     restart: unless-stopped
     networks: 
       - nextcloud_network
     environment:
+    # TODO: update values
       PGADMIN_DEFAULT_EMAIL: support@example.com
       PGADMIN_DEFAULT_PASSWORD: easypassword1234!
     volumes:
@@ -116,6 +117,7 @@ services:
       - nextcloud:/var/www/html:ro
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    # TODO: update values
     environment:
       - VIRTUAL_HOST=nextcloud.example.com
     depends_on:
