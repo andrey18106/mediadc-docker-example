@@ -14,7 +14,7 @@
   * I didn't optimize it (using dockerfile steps to use create a smaller build)
   * This is because I'm not distributing the image, but the build steps
 * nextcloud machine learning plugins that will work with current setup, as admin users `+apps` install the app there
-  * remember to check downloads for app when deciding on which nextcloud version to upgrade to
+  * remember to check downloads section on app/plugin page when deciding on which nextcloud **version** to upgrade to
   * [MediaDC](#mediadc-docker-image-base-example)
   * [Recognize](https://apps.nextcloud.com/apps/recognize)
    * recommended to set less cores to drive cpu usage to less than 100%
