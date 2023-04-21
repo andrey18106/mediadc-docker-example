@@ -77,7 +77,7 @@
    * locate the nextcloud app container and console log in
       ![portainer console](doc_media/portainer_console.png)
    * run `./occ` get the user id needed, and log back in by user id
-      ![portainer console](doc_media/portainer_console.png)
+      ![portainer_container_user_login](doc_media/portainer_container_user_login.png)
    * fix permisssions folder permissions
    ```bash
     chown -R www-data:www-data config
