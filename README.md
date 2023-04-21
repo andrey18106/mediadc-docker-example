@@ -103,8 +103,8 @@
 There is a basic Docker Compose configuration example to use [MediaDC](https://github.com/andrey18106/mediadc) application.
 
 ## Advanced
-* You need to adjust your Nextcloud app container like in [/app/Dockerfile](/mediadc/Dockerfile)
-to install required dependecies and re-build your container like in [docker-compose.yml](docker-compose.yml#L24).
+* You need to adjust your Nextcloud app container like in [app/Dockerfile](/mediadc/Dockerfile)
+to install required dependencies and re-build your container like in [docker-compose.yml](docker-compose.yml#L24).
 * after first docker compose launch some settings, have to be changed in the config.php file.
   * locate `\nextcloud-docker-ml-example_nextcloud` volume should be somewhere in `\\wsl.localhost\docker-desktop-data\data\docker\volumes`
   * `_data\config\config.php`
@@ -113,7 +113,7 @@ to install required dependecies and re-build your container like in [docker-comp
 * database backup/restore (in git bash)
   * TODO: task scheduler to backup db to external drive daily and delete old backups
   * backup
-    * docker exec -t your-db-container pg_dumpall -c -U postgres > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+    *     docker exec -t your-db-container pg_dumpall -c -U postgres > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
   * restore `cat your_dump.sql | docker exec -i your-db-container psql -U postgres`
 * TODO: sofware (maybe docker image) to sync nextcloud db backups and data to 2nd drive
 
