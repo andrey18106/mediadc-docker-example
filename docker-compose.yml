@@ -158,6 +158,7 @@ services:
     # to www-data in the cron volume
     entrypoint: /cron.sh
     links:
+      - "imaginary:imaginary"
       - "db_15:database"
       - "redis:redis"
 
