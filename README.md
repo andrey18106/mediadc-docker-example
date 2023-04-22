@@ -74,8 +74,11 @@
   1. also check `TODO:`s and update values as needed in `docker-compose.yml` 
 1. `cd` into this folder
    * run docker compose `docker compose up -d`
-   * to rebuild images from scratch run `docker compose up -d --build`
-      * 
+   * to rebuild images from scratch or **update** for minor versions run 
+      * `docker compose down` then `docker system prune -a` to remove old images
+      * `docker compose up -d --build`
+        * `docker-compose build --no-cache` build from first level (a prune is usually needed to clear out base image and get latest minor version)
+      * `docker-compose run --rm app /bin/bash` directly login if rsync device busy error
 1. log into portainer `https://localhost:9443/`
    * locate the nextcloud app container and console log in
       ![portainer console](doc_media/portainer_console.png)
