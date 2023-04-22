@@ -94,7 +94,7 @@ services:
     environment:
       PORT: 9000
     networks:
-      - nextcloud_net
+      - nextcloud_network
     command: -enable-url-source -enable-placeholder -cpus 2
 
    app:
