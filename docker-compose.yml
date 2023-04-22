@@ -79,7 +79,23 @@ services:
     links:
       - "redis:redis"
     volumes:
-      - redisinsight:/db 
+      - redisinsight:/db
+
+# configure to use by updating config.php file
+# see https://docs.nextcloud.com/server/latest/admin_manual/installation/server_tuning.html
+# and https://help.nextcloud.com/t/how-can-i-tell-if-nc-is-using-imaginary/138386
+# https://github.com/nextcloud/all-in-one/blob/main/Containers/imaginary/Dockerfile
+   imaginary:
+    container_name: nextcloud_imaginary
+    image: nextcloud/aio-imaginary:latest
+    restart: always
+    networks: 
+      - nextcloud_network 
+    environment:
+      PORT: 9000
+    networks:
+      - nextcloud_net
+    command: -enable-url-source -enable-placeholder -cpus 2
 
    app:
     container_name: nextcloud_app
@@ -104,6 +120,7 @@ services:
       - PHP_UPLOAD_LIMIT=8192M
       - REDIS_HOST=redis
     links:
+      - "imaginary:imaginary"
       - "db_15:database"
       - "redis:redis"
 
