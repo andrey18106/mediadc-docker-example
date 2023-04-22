@@ -27,6 +27,8 @@
     * ![](doc_media/registration_plugin_setup.PNG)
   * [Social Login](https://apps.nextcloud.com/apps/sociallogin)
     * ![](doc_media/social_plugin_settings.PNG)
+  * Memories
+  * Preview Generator - make sure that imaginary docker container is setup
 * plugin notes
   * in this config I do not have calendar and video calls enabled, you can enable these, I'm mostly focused on personal photo and video backups
 
@@ -73,19 +75,42 @@
 1. `cd` into this folder
    * run docker compose `docker compose up -d`
    * to rebuild images from scratch run `docker compose up -d --build`
+      * 
 1. log into portainer `https://localhost:9443/`
    * locate the nextcloud app container and console log in
       ![portainer console](doc_media/portainer_console.png)
+      * fix permisssions folder permissions as root user
+      ```bash
+        chown -R www-data:www-data config
+        chown -R www-data:www-data apps
+        chown -R www-data:www-data custom_apps
+        chown -R www-data:www-data data
+      ```
    * run `./occ` get the user id needed, and log back in by user id
       ![portainer_container_user_login](doc_media/portainer_container_user_login.png)
-   * fix permisssions folder permissions
-   ```bash
-    chown -R www-data:www-data config
-    chown -R www-data:www-data apps
-    chown -R www-data:www-data custom_apps
-    chown -R www-data:www-data data
-   ```
+      * you should now be able to run `./occ` commands as the correct user such as scan files added outside and other commands
 1. as always test RESTARTING the computer after setup and see if services come back online, if they don't something isn't set up right.
+
+## Phone user setup
+* download ios app
+* log into nextcloud self hosted service
+* setup automatic uploads
+  1. More > Settings > Auto upload
+    * select auto upload folder and create one for your phone or use default
+    * select use subfolders
+  1. More > Advanced > Chunk size in MB - 20
+  1. More > Settings > Auto upload
+    * select Upload the whole camera role
+    * Note: 
+      * wait for it to finish loading before closing the app (should see a count bottom left of files left to upload)
+      * subfolders is recommended to be checked
+      * if you click stop in the More > Transfers it will not reattempt to upload
+      * you can restart your auto uploads from scratch by unselecting and reselecting this option
+   1. like most ios apps you can only upload your photos and videos by having the application open, only icloud has full background support
+     * the way around this is to set a [shortcut](https://apps.apple.com/us/app/shortcuts/id915249334) to open nextcloud any time you plug it into a charger
+      ![](doc_media\2CBFC60A-3490-4D99-B6DD-54BF9F6F317F.jpeg)
+     * if you have a lot of photos you can open Settings > Display & Brightness > Auto-lock - and set to **never** to upload more photos overnight while charging to catch up
+       * DON'T forget to change back to 5 minutes or 30 seconds the following day to not kill your battery
 
 ## Hardware
 * Note: raspberry pi is not powerful enough for nextcloud
@@ -112,8 +137,10 @@ to install required dependencies and re-build your container like in [docker-com
 * useful [additional services](./additional_services/README.md) to install
 * database backup/restore (in git bash)
   * TODO: task scheduler to backup db to external drive daily and delete old backups
+  * see powershell scripts in `scripts` folder for backing up database and custom_apps folder
   * backup
     *     docker exec -t your-db-container pg_dumpall -c -U postgres > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
   * restore `cat your_dump.sql | docker exec -i your-db-container psql -U postgres`
 * TODO: sofware (maybe docker image) to sync nextcloud db backups and data to 2nd drive
+  * currently I run resilio to backup to another external drive on another computer
 
