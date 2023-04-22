@@ -1,4 +1,4 @@
-version: '3.3'
+version: '4.0'
 # can't be used in portainer b/c of local docker image builds, should be rerun regularly for updates
 # docker compose up -d --build
 # https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/postgres/fpm/docker-compose.yml
@@ -85,6 +85,10 @@ services:
 # see https://docs.nextcloud.com/server/latest/admin_manual/installation/server_tuning.html
 # and https://help.nextcloud.com/t/how-can-i-tell-if-nc-is-using-imaginary/138386
 # https://github.com/nextcloud/all-in-one/blob/main/Containers/imaginary/Dockerfile
+# https://okxo.de/speed-up-nextcloud-preview-generation-with-imaginary/
+# ./occ config:system:set enabledPreviewProviders 0 --value="OC\\Preview\\Imaginary"
+# ./occ config:system:set preview_imaginary_url --value="http://imaginary:9000"
+# test curl -O "http://127.0.0.1:9001/crop?width=500&height=400&url=https://raw.githubusercontent.com/h2non/imaginary/master/testdata/large.jpg"
    imaginary:
     container_name: nextcloud_imaginary
     image: nextcloud/aio-imaginary:latest
@@ -92,10 +96,10 @@ services:
     networks: 
       - nextcloud_network 
     environment:
-      PORT: 9000
-    networks:
-      - nextcloud_network
-    command: -enable-url-source -enable-placeholder -cpus 2
+      - PORT=9000
+    ports:
+      - "9001:9000"
+    command: -concurrency 50 -enable-url-source -log-level debug
 
    app:
     container_name: nextcloud_app
@@ -148,6 +152,10 @@ services:
     restart: always
     volumes:
       - nextcloud:/var/www/html
+      - nextcloud_cron:/var/spool/cron/crontabs
+    # add
+    # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
+    # to www-data in the cron volume
     entrypoint: /cron.sh
     links:
       - "db_15:database"
