@@ -109,6 +109,7 @@ services:
       - nextcloud_network
     volumes:
       - nextcloud:/var/www/html:z
+      - nextcloud_cron:/var/spool/cron/crontabs
       # TODO: update your external drive path here
       - d:/nextcloud_data:/var/www/html/data:z
     environment:
@@ -147,27 +148,27 @@ services:
     networks:
       - nextcloud_network
 
-   cron:
-    container_name: nextcloud_cron
-    build: ./app
-    networks: 
-      - nextcloud_network
-    restart: always
-    volumes:
-      - nextcloud:/var/www/html:z
-      - d:/nextcloud_data:/var/www/html/data:z
-      - nextcloud_cron:/var/spool/cron/crontabs
-    # add to nextcloud_cron volume www-data
-    # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
-    # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
-    # */30 * * * * php -f /var/www/html/occ face:background_job -t 900
-    # 0 2 * * 6 php -f /var/www/html/occ files:scan --all
-    # to www-data in the cron volume
-    entrypoint: /cron.sh
-    links:
-      - "imaginary:imaginary"
-      - "db_15:database"
-      - "redis:redis"
+  #  cron:
+  #   container_name: nextcloud_cron
+  #   build: ./app
+  #   networks: 
+  #     - nextcloud_network
+  #   restart: always
+  #   volumes:
+  #     - nextcloud:/var/www/html:z
+  #     - d:/nextcloud_data:/var/www/html/data:z
+  #     - nextcloud_cron:/var/spool/cron/crontabs
+  #   # add to nextcloud_cron volume www-data
+  #   # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
+  #   # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
+  #   # */30 * * * * php -f /var/www/html/occ face:background_job -t 900
+  #   # 0 2 * * 6 php -f /var/www/html/occ files:scan --all
+  #   # to www-data in the cron volume
+  #   entrypoint: /cron.sh
+  #   links:
+  #     - "imaginary:imaginary"
+  #     - "db_15:database"
+  #     - "redis:redis"
 
 volumes:
   pg_15:
