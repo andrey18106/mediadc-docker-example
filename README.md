@@ -10,8 +10,8 @@
   * despite all this do not forget to run backups (of your database and files)
     * database is less important b/c you can regenerate it
 * currently targeting nextcloud 25 since this is the latest version supported by plugins
-* container size is 2.7 gb. 
-  * I didn't optimize it (using dockerfile steps to use create a smaller build)
+* container size is ~~2.4~~ 2.0 gb. 
+  * some docker container optimizations to decrease size, could tweak nvm node steps to maybe make it smaller
   * This is because I'm not distributing the image, but the build steps
 * nextcloud machine learning plugins that will work with current setup, as admin users `+apps` install the app there
   * remember to check downloads section on app/plugin page when deciding on which nextcloud **version** to upgrade to
