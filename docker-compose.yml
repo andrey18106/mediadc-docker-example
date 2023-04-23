@@ -136,6 +136,7 @@ services:
       - ${HTTP_PORT}:80
     volumes:
       - nextcloud:/var/www/html:ro
+      - d:/nextcloud_data:/var/www/html/data:ro
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
     # TODO: update values
@@ -149,12 +150,18 @@ services:
    cron:
     container_name: nextcloud_cron
     image: nextcloud:${NEXTCLOUD_VERSION}
+    networks: 
+      - nextcloud_network
     restart: always
     volumes:
       - nextcloud:/var/www/html
+      - d:/nextcloud_data:/var/www/html/data
       - nextcloud_cron:/var/spool/cron/crontabs
-    # add
+    # add to nextcloud_cron volume www-data
     # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
+    # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
+    # */30 * * * * php -f /var/www/html/occ face:background_job -t 900
+    # 0 2 * * 6 php -f /var/www/html/occ files:scan --all
     # to www-data in the cron volume
     entrypoint: /cron.sh
     links:

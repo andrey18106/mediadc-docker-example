@@ -28,7 +28,17 @@
   * [Social Login](https://apps.nextcloud.com/apps/sociallogin)
     * ![](doc_media/social_plugin_settings.PNG)
   * Memories
-  * Preview Generator - make sure that imaginary docker container is setup
+  * Preview Generator - make sure that imaginary docker container is setup, need to update config.php with preview settings
+     * optimizations
+       ```sh
+        ./occ config:app:set previewgenerator squareSizes --value="32 256"
+        ./occ config:app:set previewgenerator widthSizes  --value="256 384"
+        ./occ config:app:set previewgenerator heightSizes --value="256"
+        ./occ config:system:set preview_max_x --value 2048
+        ./occ config:system:set preview_max_y --value 2048
+        ./occ config:system:set jpeg_quality --value 60
+        ./occ config:app:set preview jpeg_quality --value="60"
+       ```
 * plugin notes
   * in this config I do not have calendar and video calls enabled, you can enable these, I'm mostly focused on personal photo and video backups
 
