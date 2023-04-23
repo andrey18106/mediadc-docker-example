@@ -22,6 +22,7 @@
    * ![](doc_media/recognize_settings.PNG)
   * [Face Recognition](https://apps.nextcloud.com/apps/facerecognition)
    * need to console log into nextcloud app and download a module using the command line
+   * `./occ face:setup -M 1GB` adding more memory doesn't help, but can make it run slower or completely stop
 * additional plugins that I've setup for convenience
   * [Registration](https://apps.nextcloud.com/apps/registration)
     * ![](doc_media/registration_plugin_setup.PNG)
