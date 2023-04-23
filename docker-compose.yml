@@ -108,9 +108,9 @@ services:
     networks: 
       - nextcloud_network
     volumes:
-      - nextcloud:/var/www/html
+      - nextcloud:/var/www/html:z
       # TODO: update your external drive path here
-      - d:/nextcloud_data:/var/www/html/data
+      - d:/nextcloud_data:/var/www/html/data:z
     environment:
       - NEXTCLOUD_TRUSTED_DOMAINS=${NEXTCLOUD_TRUSTED_DOMAINS}
       - POSTGRES_HOST=database:5432
@@ -154,8 +154,8 @@ services:
       - nextcloud_network
     restart: always
     volumes:
-      - nextcloud:/var/www/html
-      - d:/nextcloud_data:/var/www/html/data
+      - nextcloud:/var/www/html:z
+      - d:/nextcloud_data:/var/www/html/data:z
       - nextcloud_cron:/var/spool/cron/crontabs
     # add to nextcloud_cron volume www-data
     # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
