@@ -149,7 +149,7 @@ services:
 
    cron:
     container_name: nextcloud_cron
-    image: nextcloud:${NEXTCLOUD_VERSION}
+    build: ./app
     networks: 
       - nextcloud_network
     restart: always
