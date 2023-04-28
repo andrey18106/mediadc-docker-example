@@ -32,7 +32,7 @@ $customAppFolderSource = $nextCloudDockerDataRootFolder + "\custom_apps\*"
 
 $zipFolderPath = $backupFolderPath + $zipFolder
 New-Item -ItemType Directory -Force -Path $zipFolderPath
-$filenameFormat = 'custom_apps_' + (Get-Date -Format 'yyyy-mm-dd-hh-mm') + '.zip'
+$filenameFormat = 'custom_apps_' + (Get-Date -Format 'yyyy-MM-dd-hh-mm') + '.zip'
 
 $zipDestination = "$zipFolderPath\$filenameFormat"
 
