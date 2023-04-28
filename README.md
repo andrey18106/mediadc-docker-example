@@ -122,7 +122,7 @@
       * you can restart your auto uploads from scratch by unselecting and reselecting this option
    1. like most ios apps you can only upload your photos and videos by having the application open, only icloud has full background support
      * the way around this is to set a [shortcut](https://apps.apple.com/us/app/shortcuts/id915249334) to open nextcloud any time you plug it into a charger
-      ![](doc_media\2CBFC60A-3490-4D99-B6DD-54BF9F6F317F.jpeg)
+      ![](doc_media/2CBFC60A-3490-4D99-B6DD-54BF9F6F317F.jpeg)
      * if you have a lot of photos you can open Settings > Display & Brightness > Auto-lock - and set to **never** to upload more photos overnight while charging to catch up
        * DON'T forget to change back to 5 minutes or 30 seconds the following day to not kill your battery
 
