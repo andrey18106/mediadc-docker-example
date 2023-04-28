@@ -157,4 +157,9 @@ to install required dependencies and re-build your container like in [docker-com
   * restore `cat your_dump.sql | docker exec -i your-db-container psql -U postgres`
 * TODO: sofware (maybe docker image) to sync nextcloud db backups and data to 2nd drive
   * currently I run resilio to backup to another external drive on another computer
+  * options:
+    * discussion: https://superuser.com/questions/65524/how-do-i-synchronise-two-folders-in-real-time-in-windows-7
+      * robocopy monitor looks promising, but more 
+      * https://synkron.sourceforge.net/, looks less technical and easy to setup
+    * docker rsync daily cron job: https://hub.docker.com/r/eeacms/rsync
 

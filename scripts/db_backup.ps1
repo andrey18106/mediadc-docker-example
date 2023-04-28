@@ -30,7 +30,7 @@ Get-ChildItem $logFolderPath -Recurse  | Where-Object { $_.LastWriteTime -lt $Da
 $configFolderPath = $backupFolderPath + $configFolder
 New-Item -ItemType Directory -Force -Path $configFolderPath
 
-$filenameFormat = 'config_' + (Get-Date -Format 'yyyy-mm-dd-hh-mm') + '.php'
+$filenameFormat = 'config_' + (Get-Date -Format 'yyyy-MM-dd-hh-mm') + '.php'
 "Copy-Item $nextCloudDockerDataRootFolder\config\config.php -Destination $configFolderPath\$filenameFormat"  | Tee-Object -Append -file $backupLog
 Copy-Item $nextCloudDockerDataRootFolder\config\config.php -Destination $configFolderPath\$filenameFormat
 
@@ -40,7 +40,7 @@ Get-ChildItem $configFolderPath -Recurse  | Where-Object { $_.LastWriteTime -lt 
 $pgDumpFolderPath = $backupFolderPath + $pgDumpFolder
 
 New-Item -ItemType Directory -Force -Path $pgDumpFolderPath
-$filenameFormat = 'dump_' + (Get-Date -Format 'yyyy-mm-dd-hh-mm') + '.sql'
+$filenameFormat = 'dump_' + (Get-Date -Format 'yyyy-MM-dd-hh-mm') + '.sql'
 
 "docker exec -t $nextCloudPostgresContainerId pg_dumpall -c -U postgres | Out-File -FilePath $pgDumpFolderPath\$filenameFormat"  | Tee-Object -Append -file $backupLog
 docker exec -t $nextCloudPostgresContainerId pg_dumpall -c -U postgres | Out-File -FilePath $pgDumpFolderPath\$filenameFormat
