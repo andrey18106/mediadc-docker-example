@@ -75,6 +75,10 @@
    * `docker volume create portainer_data`
   * `docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest`
   * install watchtower to auto update docker images (not the custom built nextcloud ones) `docker run -d  --name watchtower --restart=always -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower`
+  * TODO: research watchtower commands to trigger a docker compose rebuild if base image is updated fron cron job and powershell
+    * `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --run-once nextcloud:25.0-fpm`
+    * https://github.com/containrrr/watchtower/issues/1231
+  * TODO: update powershell scripts to not use container ids, but container name
 1. buy a domain on [namecheap](https://namecheap.pxf.io/m5O5Ke) $15 a year and setup on cloudflare, setup cloudflare tunnel for public urls for your device and use subdomains for your services.
 1. setup your custom settings
   1. copy `example.env` to `.env`
@@ -150,6 +154,7 @@ to install required dependencies and re-build your container like in [docker-com
   * recommend backing up this file on the external drive
 * useful [additional services](./additional_services/README.md) to install
 * database backup/restore (in git bash)
+  * TODO: efs encrypted NTFS formated drive folders, test on linux, windows, and docker to make sure working as expected on a thumbdrive
   * TODO: task scheduler to backup db to external drive daily and delete old backups
   * see powershell scripts in `scripts` folder for backing up database and custom_apps folder
   * backup

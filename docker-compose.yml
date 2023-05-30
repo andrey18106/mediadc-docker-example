@@ -101,6 +101,18 @@ services:
       - "9001:9000"
     command: -concurrency 50 -enable-url-source -log-level debug
 
+   clamav:
+    image: "clamav/clamav:stable_base"
+    container_name: nextcloud_clamav
+    networks: 
+      - nextcloud_network 
+    volumes:
+      # Socket
+      - /var/run/clamav/:/var/run/clamav/
+      # Virus DB
+      - /var/docker/clamav/virus_db/:/var/lib/clamav/
+    restart: unless-stopped
+
    app:
     container_name: nextcloud_app
     build: ./app
@@ -159,9 +171,11 @@ services:
       - nextcloud_cron:/var/spool/cron/crontabs
     # add to nextcloud_cron volume www-data
     # 0 4 * * * php -f /var/www/html/occ preview:pre-generate
-    # */30 * * * * php -f /var/www/html/occ face:background_job -t 900
-    # 0 2 * * 6 php -f /var/www/html/occ files:scan --all
-    # 0 3 * * 6 php -f /var/www/html/occ recognize:classify
+    # # */30 * * * * php -f /var/www/html/occ face:background_job -t 900
+    # # every 2 days at 11 pm
+    # 0 23 */2 * * php -f /var/www/html/occ files:scan --all
+    # 0 */12 * * * php -f /var/www/html/occ recognize:classify
+    # 45 4 */2 * * php -f /var/www/html/occ recognize:cluster-faces  
     # to www-data in the cron volume
     entrypoint: /cron.sh
     links:
