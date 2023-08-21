@@ -166,5 +166,7 @@ to install required dependencies and re-build your container like in [docker-com
     * discussion: https://superuser.com/questions/65524/how-do-i-synchronise-two-folders-in-real-time-in-windows-7
       * robocopy monitor looks promising, but more 
       * https://synkron.sourceforge.net/, looks less technical and easy to setup
-    * docker rsync daily cron job: https://hub.docker.com/r/eeacms/rsync
-
+    * docker rsync daily cron job: https://hub.docker.com/r/eeacms/
+    * https://superuser.com/questions/497205/can-robocopy-monitor-files-on-a-time-increment-of-less-than-one-minute
+      * powershell to handle
+    * recommend for windows [DSYNCHRONIZE](http://dimio.altervista.org/eng/) - free and supports realtime sync
