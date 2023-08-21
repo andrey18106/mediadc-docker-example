@@ -2,7 +2,8 @@
 # get database container id, may update when watchtower upgrades container to new version
 # this program runs a backup of the postgres database, nextcloud config file
 # also deletes any backups older than 15 days
-$nextCloudPostgresContainerId = "xxx"
+$nextCloudPostgresContainerName = "nextcloud_postgres15"
+$nextCloudPostgresContainerId = docker ps --no-trunc -aqf "name=$nextCloudPostgresContainerName"
 $nextCloudDockerDataRootFolder = "\\wsl.localhost\docker-desktop-data\data\docker\volumes\xxxx\_data"
 $backupFolderPath = "D:\nextcloud_backup"
 $pgDumpFolder = "\pg_dumpall"
