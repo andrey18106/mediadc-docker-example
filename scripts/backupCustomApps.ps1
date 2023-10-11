@@ -9,6 +9,7 @@ $zipFolder = "\archive"
 
 $currDate = Get-Date
 $Daysback = "-15"
+$BackupCount = 20
 $DatetoDelete = $currDate.AddDays($Daysback)
 
 $logFolderPath = $backupFolderPath + $logFolder
@@ -42,7 +43,7 @@ $zipDestination = "$zipFolderPath\$filenameFormat"
 & $command a -mx0 -tzip $zipDestination $customAppFolderSource -mx0 -xr!node_modules
 
 
-"Get-ChildItem $zipFolderPath -Recurse  | Where-Object { $_.LastWriteTime -lt $DatetoDelete } | Remove-Item"  | Tee-Object -Append -file $backupLog
-Get-ChildItem $zipFolderPath -Recurse  | Where-Object { $_.LastWriteTime -lt $DatetoDelete } | Remove-Item
+"Get-ChildItem $zipFolderPath -Recurse  | Where-Object {-not $_.PsIsContainer | Sort-Object CreationTime -desc | Select-Object -Skip $BackupCount | Remove-Item -Force"  | Tee-Object -Append -file $backupLog
+Get-ChildItem $zipFolderPath -Recurse  | Where-Object {-not $_.PsIsContainer} | Sort-Object CreationTime -desc | Select-Object -Skip $BackupCount | Remove-Item -Force
 
 ":::$currDate:::Finished nextcloud custom_apps backup:::" | Tee-Object -Append -file $backupLog
