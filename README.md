@@ -78,7 +78,6 @@
   * TODO: research watchtower commands to trigger a docker compose rebuild if base image is updated fron cron job and powershell
     * `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower --run-once nextcloud:25.0-fpm`
     * https://github.com/containrrr/watchtower/issues/1231
-  * TODO: update powershell scripts to not use container ids, but container name
 1. buy a domain on [namecheap](https://namecheap.pxf.io/m5O5Ke) $15 a year and setup on cloudflare, setup cloudflare tunnel for public urls for your device and use subdomains for your services.
 1. setup your custom settings
   1. copy `example.env` to `.env`
@@ -108,6 +107,12 @@
       ![portainer_container_user_login](doc_media/portainer_container_user_login.png)
       * you should now be able to run `./occ` commands as the correct user such as scan files added outside and other commands
 1. as always test RESTARTING the computer after setup and see if services come back online, if they don't something isn't set up right.
+  * maybe multi thread chown https://serverfault.com/questions/378280/fastest-way-to-chown-a-whole-device-xfs
+
+## Running an update
+* **double check** nextcloud docker tag to make sure you are on a major nextcloud version and not on latest version as this may cause issues with incompatible plugings
+* `docker compose down` then `docker system prune -a` to remove old images
+      * `docker compose up -d --build`
 
 ## Phone user setup
 * download ios app
@@ -137,6 +142,7 @@
 * bump ram to [64 gb](https://amzn.to/3L0mkpS) (not needed, but nice for handling more users)
   * replacement video https://youtu.be/_iHyF2lAxYo
 * [hdmi dummy plugs](https://amzn.to/3MZ6oXv) (for remote desktop)
+* NOTE: it's still hard to determine if intel is better than amd cpus b/c of better driver support and quicksync, supposedly amd has support need to figure out how to enable the gpu flags
 * external hard drive storage options (depends on your expected use, can replace later)
   * [16 TB](https://amzn.to/43VdIti) 2x
   * [6 TB](https://amzn.to/3GZOvEb) 2x
@@ -154,13 +160,13 @@ to install required dependencies and re-build your container like in [docker-com
   * recommend backing up this file on the external drive
 * useful [additional services](./additional_services/README.md) to install
 * database backup/restore (in git bash)
-  * TODO: efs encrypted NTFS formated drive folders, test on linux, windows, and docker to make sure working as expected on a thumbdrive
-  * TODO: task scheduler to backup db to external drive daily and delete old backups
+  * encrypt hard drives in NTFS format using bitlocker. Works on linux and windows make sure to set the remember password flag and test that it auto connects after a restart
   * see powershell scripts in `scripts` folder for backing up database and custom_apps folder
-  * backup
+    * use task scheduler to backup db to external drive daily and delete old backups
+  * backup (see powershell script for automation)
     *     docker exec -t your-db-container pg_dumpall -c -U postgres > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
   * restore `cat your_dump.sql | docker exec -i your-db-container psql -U postgres`
-* TODO: sofware (maybe docker image) to sync nextcloud db backups and data to 2nd drive
+* sofware (maybe docker image) to sync nextcloud db backups and data to 2nd drive
   * currently I run resilio to backup to another external drive on another computer
   * options:
     * discussion: https://superuser.com/questions/65524/how-do-i-synchronise-two-folders-in-real-time-in-windows-7
@@ -169,4 +175,4 @@ to install required dependencies and re-build your container like in [docker-com
     * docker rsync daily cron job: https://hub.docker.com/r/eeacms/
     * https://superuser.com/questions/497205/can-robocopy-monitor-files-on-a-time-increment-of-less-than-one-minute
       * powershell to handle
-    * recommend for windows [DSYNCHRONIZE](http://dimio.altervista.org/eng/) - free and supports realtime sync
+    * recommend for **WINDOWS** [DSYNCHRONIZE](http://dimio.altervista.org/eng/) - free and supports realtime sync

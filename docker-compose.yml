@@ -79,7 +79,7 @@ services:
     links:
       - "redis:redis"
     volumes:
-      - redisinsight:/db
+      - redisinsight:/db:z
 
 # configure to use by updating config.php file
 # see https://docs.nextcloud.com/server/latest/admin_manual/installation/server_tuning.html
