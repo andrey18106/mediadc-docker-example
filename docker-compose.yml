@@ -135,6 +135,19 @@ services:
       # TODO: may want 2048M memory limit if ram is 16 GB
       - PHP_UPLOAD_LIMIT=8192M
       - REDIS_HOST=redis
+      # https://help.nextcloud.com/t/nc-23-upgrade-crashes-php-fpm-server-reached-pm-max-children-setting-10-consider-raising-it/129178/4
+      # https://github.com/nextcloud/docker/pull/1766#issuecomment-1686344688
+    command: >-
+      sh -c '
+        {
+          echo pm=dynamic;
+          echo pm.max_children=120;
+          echo pm.start_servers=12;
+          echo pm.min_spare_servers=6;
+          echo pm.max_spare_servers=18;
+        } >> /usr/local/etc/php-fpm.d/www.conf;
+        exec /entrypoint.sh php-fpm
+      '
     links:
       - "imaginary:imaginary"
       - "db_15:database"
